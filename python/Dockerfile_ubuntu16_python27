@@ -1,0 +1,25 @@
+# Pull base image.
+FROM ubuntu:16.10
+
+MAINTAINER yangkai yangkainn@gmail.com
+
+# Install.
+
+COPY sources.list /etc/apt/sources.list
+
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y python2.7 vim wget \
+    && wget https://bootstrap.pypa.io/ez_setup.py -O - > garb.py \
+    && python2.7 garb.py \
+    && /usr/local/bin/easy_install-2.7 pip \
+    && pip install --upgrade pip \
+    && pip install jinja2 influxdb 
+
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+ADD . /opt/
+
+WORKDIR /opt/
+
+CMD ["python2.7","test.py"]

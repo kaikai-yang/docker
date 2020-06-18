@@ -1,0 +1,22 @@
+FROM centos:7.7.1908
+
+MAINTAINER yangkai yangkainn@gmail.com
+
+RUN set -ex \
+    && rm -f /etc/yum.repos.d/* \
+    && curl http://mirrors.aliyun.com/repo/Centos-7.repo > /etc/yum.repos.d/CentOS-Base.repo \
+    && curl http://mirrors.aliyun.com/repo/epel-7.repo > /etc/yum.repos.d/epel.repo \
+    && yum install -y vim net-tools \
+         python-pip python-devel gcc gcc-c++ \
+    && pip install redis jinja2 psutil \
+    && yum remove -y gcc gcc-c++ python-devel python-pip \
+    && yum clean all \
+    && rm -rf /tmp/* /var/cache/* /var/log/*
+
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+ADD . /opt
+
+WORKDIR /opt
+
+CMD ["python2.7","test.py"]
